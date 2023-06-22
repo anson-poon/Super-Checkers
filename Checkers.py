@@ -1,62 +1,5 @@
-# Author: Anson Poon
-# GitHub username: anson-poon
-# Description: Super-Checkers
 import numpy as np
-
-
-class Player:
-    """
-    Represent a player in the game, with the player's name, piece color, king/triple king count,
-    and captured pieces count.
-    """
-
-    def __init__(self, player_name, piece_color):
-        self._player_name = player_name
-        self._piece_color = piece_color
-        self._king_count = 0
-        self._triple_king_count = 0
-        self._captured_pieces_count = 0
-
-    def get_player_name(self):
-        """Retrieve the player's name"""
-        return self._player_name
-
-    def get_piece_color(self):
-        """Retrieve the player's piece color"""
-        return self._piece_color
-
-    def get_king_count(self):
-        """Retrieve the number of king the player owns"""
-        return self._king_count
-
-    def increment_king_count(self):
-        """Increment the number of king the player owns by 1"""
-        self._king_count += 1
-
-    def decrement_king_count(self):
-        """Decrement the number of king the player owns by 1"""
-        self._king_count -= 1
-
-    def get_triple_king_count(self):
-        """Retrieve the number of triple king the player owns"""
-        return self._triple_king_count
-
-    def increment_triple_king_count(self):
-        """Increment the number of triple king the player owns by 1"""
-        self._triple_king_count += 1
-
-    def decrement_triple_king_count(self):
-        """Decrement the number of triple king the player owns by 1"""
-        self._triple_king_count -= 1
-
-    def get_captured_pieces_count(self):
-        """Retrieve the number of opponent pieces the player captured"""
-        return self._captured_pieces_count
-
-    def increment_captured_pieces_count(self, num):
-        """Increment the number of captured piece by the number of pieces captured at one round"""
-        self._captured_pieces_count += num
-
+from Player import *
 
 class Checkers:
     """
@@ -77,6 +20,11 @@ class Checkers:
         """Create a player object and assigns it with a piece color"""
         self._player[player_name] = Player(player_name, piece_color)
         return self._player[player_name]
+
+    def get_current_player_name(self):
+        for player in self._player.values():
+            if player.get_piece_color() == self._player_turn:
+                return player.get_player_name()
 
     def play_game(self, player_name, starting_sq_loc, destination_sq_loc):
         """"""
@@ -811,8 +759,6 @@ class Checkers:
     def validate_triple_king_jump_opportunity(self, current_sq_loc, checker_piece):
         """Validate if the triple king checker has the opportunity to jump an opponent's checker"""
         # for x_coord in range
-
-        # TODO
         pass
 
     def flip_turn(self, player_name):
@@ -859,10 +805,10 @@ class Checkers:
         """Check to see if a player has won the game"""
         for player in self._player:
             if self._player[player].get_captured_pieces_count() == 12:
-                # print(f"{self._player[player].get_player_name()} won!")
-                return self._player[player].get_player_name()
+                print(f"{self._player[player].get_player_name()} won!")
+                return True
         else:
-            return "Game has not ended"
+            return False
 
     def create_board(self):
         """Create each row of the board as an array and append it to self._board"""
@@ -894,101 +840,3 @@ class InvalidPlayer(Exception):
 class InvalidSquare(Exception):
     """Exception for when a player attempts to move to an invalid square"""
     pass
-
-def main():
-    game = Checkers()
-    player_1 = game.create_player("Adam", "White")
-    player_2 = game.create_player("Lucy", "Black")
-
-    game.play_game("Lucy", (5, 6), (4, 7))
-    game.play_game("Adam", (2, 1), (3, 0))
-    game.play_game("Lucy", (5, 2), (4, 3))
-    game.play_game("Adam", (1, 0), (2, 1))
-    game.play_game("Lucy", (5, 0), (4, 1))
-    game.play_game("Adam", (3, 0), (5, 2))  # Regular Jump
-    game.play_game("Lucy", (6, 3), (4, 1))  # Regular Jump
-    game.play_game("Adam", (0, 1), (1, 0))
-    game.play_game("Lucy", (6, 5), (5, 6))
-    game.play_game("Adam", (2, 3), (3, 2))
-    game.play_game("Lucy", (4, 1), (2, 3))  # Regular Jump
-    game.play_game("Lucy", (2, 3), (0, 1))  # Regular Jump (dbl, become king)
-    game.play_game("Adam", (2, 1), (3, 0))
-    game.play_game("Lucy", (5, 6), (4, 5))
-    game.play_game("Adam", (0, 3), (1, 2))
-    game.play_game("Lucy", (0, 1), (3, 4))  # King jump
-    game.play_game("Adam", (3, 0), (4, 1))
-    game.play_game("Lucy", (4, 3), (3, 2))
-    game.play_game("Adam", (2, 5), (3, 6))
-    game.play_game("Lucy", (4, 7), (2, 5))  # Regular Jump
-    game.play_game("Lucy", (2, 5), (0, 3))  # Regular Jump (dbl, become king)
-    game.play_game("Adam", (1, 6), (2, 5))
-    game.play_game("Lucy", (6, 1), (5, 0))
-    game.play_game("Adam", (4, 1), (5, 2))
-    game.play_game("Lucy", (5, 0), (4, 1))
-    game.play_game("Adam", (2, 5), (4, 3))  # Regular Jump (captured a king)
-    game.play_game("Adam", (4, 3), (6, 5))  # Regular Jump
-    game.play_game("Lucy", (7, 4), (5, 6))  # Regular Jump
-    game.play_game("Adam", (0, 7), (1, 6))
-    game.play_game("Lucy", (7, 2), (6, 1))
-    game.play_game("Adam", (5, 2), (6, 3))
-    game.play_game("Lucy", (0, 3), (1, 2))
-    game.play_game("Adam", (6, 3), (7, 4))  # become king
-    game.play_game("Lucy", (4, 1), (3, 0))
-    game.play_game("Adam", (7, 4), (4, 7))  # King jump
-    game.play_game("Lucy", (1, 2), (2, 3))
-    game.play_game("Adam", (4, 7), (3, 6))
-    game.play_game("Lucy", (2, 3), (3, 4))
-    game.play_game("Adam", (0, 5), (1, 4))
-    game.play_game("Lucy", (3, 4), (0, 7))  # King jump
-    game.play_game("Adam", (3, 6), (7, 2))  # King jump
-    game.play_game("Adam", (7, 2), (5, 0))  # King jump (dbl)
-    game.play_game("Adam", (5, 0), (2, 3))  # King jump (tpl)
-    game.play_game("Lucy", (0, 7), (1, 6))
-    game.play_game("Adam", (2, 3), (3, 2))
-    game.play_game("Lucy", (7, 0), (6, 1))
-    game.play_game("Adam", (1, 4), (2, 3))
-    game.play_game("Lucy", (7, 6), (6, 5))
-    game.play_game("Adam", (3, 2), (7, 6))  # King jump
-    game.play_game("Lucy", (1, 6), (2, 5))
-    game.play_game("Adam", (2, 3), (3, 2))
-    game.play_game("Lucy", (2, 5), (3, 4))
-    game.play_game("Adam", (7, 6), (6, 5))
-    game.play_game("Lucy", (3, 4), (4, 5))
-    game.play_game("Adam", (3, 2), (4, 3))
-    game.play_game("Lucy", (4, 5), (5, 4))
-    game.play_game("Adam", (6, 5), (5, 6))
-    game.play_game("Lucy", (5, 4), (6, 3))
-    game.play_game("Adam", (5, 6), (4, 5))
-    game.play_game("Lucy", (6, 3), (7, 4))  # become triple king
-    game.play_game("Adam", (4, 5), (3, 6))
-    game.play_game("Lucy", (7, 4), (6, 3))
-    game.play_game("Adam", (3, 6), (2, 5))
-    game.play_game("Lucy", (6, 1), (5, 2))
-    game.play_game("Adam", (4, 3), (5, 4))
-    game.play_game("Lucy", (5, 2), (4, 3))
-    game.play_game("Adam", (2, 7), (3, 6))
-    game.play_game("Lucy", (6, 3), (2, 7))  # Triple king jump
-    game.play_game("Adam", (2, 5), (1, 4))
-    game.play_game("Lucy", (3, 0), (2, 1))
-    game.play_game("Adam", (1, 0), (3, 2))  # Regular Jump
-    game.play_game("Adam", (3, 2), (5, 4))  # Regular Jump (dbl)
-    game.play_game("Lucy", (6, 7), (5, 6))
-    game.play_game("Adam", (1, 4), (2, 5))
-    game.play_game("Lucy", (5, 6), (4, 7))
-    game.play_game("Adam", (2, 5), (3, 6))
-    game.play_game("Lucy", (2, 7), (6, 3))  # Triple king jump (two pieces)
-
-    # print(game._player_turn)
-    game.print_board()
-
-    print("Lucy captured: " + str(player_2.get_captured_pieces_count()))
-    print("Lucy king count: " + str(player_2.get_king_count()))
-    print("Lucy tripe king count: " + str(player_2.get_triple_king_count()))
-    print("Adam captured: " + str(player_1.get_captured_pieces_count()))
-    print("Adam king count: " + str(player_1.get_king_count()))
-    print("Adam triple king count: " + str(player_1.get_triple_king_count()))
-
-    print(game.game_winner())
-
-if __name__ == "__main__":
-    main()
