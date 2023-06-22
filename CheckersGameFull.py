@@ -1,7 +1,6 @@
 # Author: Anson Poon
 # GitHub username: anson-poon
-# Date: 03/01/2023
-# Description: Portfolio Project - Checkers
+# Description: Super-Checkers
 import numpy as np
 
 
